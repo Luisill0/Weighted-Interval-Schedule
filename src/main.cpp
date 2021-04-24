@@ -4,6 +4,7 @@
 */
 
 #include <iostream>
+#include <iomanip>
 #include <stdlib.h>
 #include <time.h>
 #include <limits.h>
@@ -16,19 +17,52 @@ using namespace std;
 
 int readSize();
 void showArrays(int* s,int* f,int* v,int* p,int n);
+double* calculateTimes(int n);
+double getAverage(double* array);
+void showAverages(double* tOpt, double* tMOpt,double *tFS);
+void showDuration(double duration);
 
 int main() {
 		
 	int n = readSize();
-	int *v,*p,*f,*s,*m,res;
-	double t1,t2,total;
-	timeval tim;
+	double tOpt[10],tMOpt[10],tFS[10],*temp;
 	
 	system("cls");
 	
 	cout << "n = " << n-1 << "\n\n";
 	
-	cout << "Generating jobs\n";
+	for(int i = 0; i < 10; i++){
+		temp = calculateTimes(n);
+		tOpt[i] = temp[0];
+		tMOpt[i] = temp[1];
+		tFS[i] = temp[2];
+	}
+	
+	cout << "\n   ComputeOpt   MComputeOpt    FindSolution\n\n";
+	
+	for(int i = 0; i < 10; i++){				
+		std::cout << std::setfill(' ') << std::setw(2) << i+1 << " |";
+		std::cout << std::setfill(' ') << std::setw(6) << tOpt[i];
+		cout << "      ";
+		std::cout << std::setfill(' ') << std::setw(7) << tMOpt[i];
+		cout << "      ";
+		std::cout << std::setfill(' ') << std::setw(7) << tFS[i];
+		cout<< "\n";
+	}
+	
+	showAverages(tOpt,tMOpt,tFS);
+
+	
+	return 0;
+}
+
+double* calculateTimes(int n){
+	int *v,*p,*s,*m,*f;
+	double t1,t2,tGen;
+	int res;
+	double *times = new double[3];
+	timeval tim;
+	
 	gettimeofday(&tim,NULL);
 	t1 = 1.0e6 * tim.tv_sec + tim.tv_usec;
 	
@@ -63,35 +97,72 @@ int main() {
 	gettimeofday(&tim,NULL);
 	t2 = 1.0e6 * tim.tv_sec + tim.tv_usec;
 	
-	total = (t2-t1);	
-	cout << "Jobs and arrays generated (" << total << " usec passed)\n";
-
-	if(n < 21){
-		showArrays(s,f,v,p,n);	
-	}
+	tGen = (t2-t1);		
 	
 	gettimeofday(&tim,NULL);
 	t1 = 1.0e6 * tim.tv_sec + tim.tv_usec; 	
 	res = computeOpt(n-1,v,p);	
 	gettimeofday(&tim,NULL);
 	t2 = 1.0e6 * tim.tv_sec + tim.tv_usec;	
-	total = (t2-t1);	
-	cout << "\nUsando computeOpt:\nEl tiempo maximo es: " << res << " (" << total << " usec passed)" << '\n';
-	
+	times[0] = (t2-t1) + tGen;	
 	
 	gettimeofday(&tim,NULL);
 	t1 = 1.0e6 * tim.tv_sec + tim.tv_usec; 
 	res = MComputeOpt(n-1,v,p,m);
 	gettimeofday(&tim,NULL);
 	t2 = 1.0e6 * tim.tv_sec + tim.tv_usec;	
-	total = (t2-t1);
-	cout << "\nUsando MComputeOpt:\nEl tiempo maximo es: " << res << " (" << total << " usec passed)" << '\n';
+	times[1] = (t2-t1) + tGen;
 	
-	cout << '\n';
+	cout <<"Tiempo maximo = " << res << "\n";
+	cout <<"Intervalos a tomar:\n";
+	gettimeofday(&tim,NULL);
+	t1 = 1.0e6 * tim.tv_sec + tim.tv_usec;
 	findSolution(n-1,v,p,m);
+	t2 = 1.0e6 * tim.tv_sec + tim.tv_usec;	
+	times[2] = (t2-t1) + tGen;
+	cout << "\n\n";
 	
-	return 0;
+	return times;	
 }
+
+void showDuration(double duration){
+	int seconds,ms,usec;
+	int temp = (int) duration;
+	
+	seconds = temp/1000000;
+	temp %= 1000000;
+	
+	ms = temp/1000;
+	temp %= 1000;
+	
+	usec = temp % 1000;
+	
+	cout << seconds << " seconds  " << ms << "  miliseconds  " << usec << "  usec";
+}
+
+double getAverage(double* array){
+	double average=0;
+	for(int i = 0; i < 10; i++){
+		average += array[i];
+	}
+	return(average/10);
+}
+
+void showAverages(double* tOpt, double* tMOpt,double *tFS){
+	double promOtp,promMOpt,promTFS;
+	
+	promOtp = getAverage(tOpt);
+	promMOpt = getAverage(tMOpt);
+	promTFS = getAverage(tFS);
+	
+	cout<< "\n\nPromedios:\n\n" << "ComputeOpt: ";
+	showDuration(promOtp);
+	cout<< "\nMComputeOpt: ";
+	showDuration(promMOpt);
+	cout<< "\nFindSolution: ";
+	showDuration(promTFS);
+}
+
 
 void showArrays(int* s,int* f,int* v,int* p,int n){
 	cout << "start\n";

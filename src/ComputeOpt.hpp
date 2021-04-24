@@ -33,7 +33,7 @@ void findSolution(int j,int v[],int p[],int m[]){
 		return;
 	}else{
 		if(v[j] + m[p[j]] >= m[j-1]){
-			std::cout << "j = " << j << '\n';
+			std::cout << "[" << j << "]  ";
 			findSolution(p[j],v,p,m);
 		}else{
 			findSolution(j-1,v,p,m);
