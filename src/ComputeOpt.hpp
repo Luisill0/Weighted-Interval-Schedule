@@ -30,3 +30,16 @@ int MComputeOpt(int j,int v[],int p[],int m[]){
 		return m[j];
 	}
 }
+
+void findSolution(int j,int v[],int p[],int m[],){
+	if(j == 0){
+		return;
+	}else{
+		if(v[j] + m[p[j]] >= m[j-1]){
+			std::cout << "j = " << j << '\n';
+			findSolution(p[j],v,p,m);
+		}else{
+			findSolution(j-1,v,p,m);
+		}	
+	}
+}

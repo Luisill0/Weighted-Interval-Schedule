@@ -63,6 +63,8 @@ int main() {
 	res = MComputeOpt(n-1,v,p,m);
 	cout << "\nUsando MComputeOpt:\nEl tiempo maximo es: " << res << '\n';
 	
+	findSolution(n-1,v,p,m);
+	
 	//int res = MComputeOpt(7,)
 	
 	//int a[] = {0,3,6,4,5,5,8}, b[] = {0,0,0,1,1,3,3};	
