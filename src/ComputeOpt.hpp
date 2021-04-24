@@ -20,4 +20,13 @@ int computeOpt(int j,int v[],int p[]){
 	}
 }
 
-
+int MComputeOpt(int j,int v[],int p[],int m[]){
+	if(j == 0){
+		return 0;
+	}else if(m[j] != -1){
+		return m[j];
+	}else{
+		m[j] = max(v[j] + MComputeOpt(p[j],v,p,m),MComputeOpt(j-1,v,p,m));
+		return m[j];
+	}
+}

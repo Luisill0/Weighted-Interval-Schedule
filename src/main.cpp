@@ -33,8 +33,9 @@ int main() {
 	m = createArray(n);
 	f = createArray(n);
 	
-	randomizeArray(s,n,2000);
+	randomizeArray(s,n,time(NULL));
 	setArrayTo(p,n,0);
+	setArrayTo(m,n,-1);
 	
 	v[0] = p[0] = s[0] = f[0] = 0;
 	m[0] = -1;
@@ -63,8 +64,13 @@ int main() {
 	cout << "p\n";
 	printArray(p,n);
 	
-	int res = computeOpt(7,v,p);
-	cout << "\nEl tiempo maximo es: " << res << '\n';
+	int res = computeOpt(n-1,v,p);
+	cout << "\nUsando computeOpt:\nEl tiempo maximo es: " << res << '\n';
+	
+	res = MComputeOpt(n-1,v,p,m);
+	cout << "\nUsando MComputeOpt:\nEl tiempo maximo es: " << res << '\n';
+	
+	//int res = MComputeOpt(7,)
 	
 	//int a[] = {0,3,6,4,5,5,8}, b[] = {0,0,0,1,1,3,3};	
 	//printArray(a,n);
