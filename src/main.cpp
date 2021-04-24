@@ -8,17 +8,29 @@
 #include <time.h>
 #include <limits.h>
 #include <math.h>
+#include <sys/time.h>
 #include "ComputeOpt.hpp"
 #include "arrays.hpp"
 
 using namespace std;
 
 int readSize();
+void showArrays(int* s,int* f,int* v,int* p,int n);
 
 int main() {
-	
+		
 	int n = readSize();
-	int *v,*p,*f,*s,*m;
+	int *v,*p,*f,*s,*m,res;
+	double t1,t2,total;
+	timeval tim;
+	
+	system("cls");
+	
+	cout << "n = " << n-1 << "\n\n";
+	
+	cout << "Generating jobs\n";
+	gettimeofday(&tim,NULL);
+	t1 = 1.0e6 * tim.tv_sec + tim.tv_usec;
 	
 	v = createArray(n);
 	p = createArray(n);
@@ -47,7 +59,41 @@ int main() {
 			}
 		}
 	}
+
+	gettimeofday(&tim,NULL);
+	t2 = 1.0e6 * tim.tv_sec + tim.tv_usec;
 	
+	total = (t2-t1);	
+	cout << "Jobs and arrays generated (" << total << " usec passed)\n";
+
+	if(n < 21){
+		showArrays(s,f,v,p,n);	
+	}
+	
+	gettimeofday(&tim,NULL);
+	t1 = 1.0e6 * tim.tv_sec + tim.tv_usec; 	
+	res = computeOpt(n-1,v,p);	
+	gettimeofday(&tim,NULL);
+	t2 = 1.0e6 * tim.tv_sec + tim.tv_usec;	
+	total = (t2-t1);	
+	cout << "\nUsando computeOpt:\nEl tiempo maximo es: " << res << " (" << total << " usec passed)" << '\n';
+	
+	
+	gettimeofday(&tim,NULL);
+	t1 = 1.0e6 * tim.tv_sec + tim.tv_usec; 
+	res = MComputeOpt(n-1,v,p,m);
+	gettimeofday(&tim,NULL);
+	t2 = 1.0e6 * tim.tv_sec + tim.tv_usec;	
+	total = (t2-t1);
+	cout << "\nUsando MComputeOpt:\nEl tiempo maximo es: " << res << " (" << total << " usec passed)" << '\n';
+	
+	cout << '\n';
+	findSolution(n-1,v,p,m);
+	
+	return 0;
+}
+
+void showArrays(int* s,int* f,int* v,int* p,int n){
 	cout << "start\n";
 	printArray(s,n);
 	cout << "finish\n";
@@ -56,27 +102,7 @@ int main() {
 	printArray(v,n);
 	cout << "p\n";
 	printArray(p,n);
-	
-	int res = computeOpt(n-1,v,p);
-	cout << "\nUsando computeOpt:\nEl tiempo maximo es: " << res << '\n';
-	
-	res = MComputeOpt(n-1,v,p,m);
-	cout << "\nUsando MComputeOpt:\nEl tiempo maximo es: " << res << '\n';
-	
-	findSolution(n-1,v,p,m);
-	
-	//int res = MComputeOpt(7,)
-	
-	//int a[] = {0,3,6,4,5,5,8}, b[] = {0,0,0,1,1,3,3};	
-	//printArray(a,n);
-	//printArray(b,n);
-	
-	//int res = computeOpt(7,v,p);
-	
-	
-	
-	return 0;
-}
+} 
 
 int readSize(){
 	int num;
