@@ -72,17 +72,20 @@ double* calculateTimes(int n){
 	m = createArray(n);
 	f = createArray(n);
 	
-	randomizeArray(s,n,time(NULL));
+	randomizeArray(f,n,tim.tv_usec);
 	setArrayTo(p,n,0);
 	setArrayTo(m,n,-1);
 	
 	v[0] = p[0] = s[0] = f[0] = 0;
 	m[0] = -1;
 	
-	MergeSort(s,0,n-1);
+	MergeSort(f,0,n-1);
 	
 	for(int i = 1; i < n; i++){
-		f[i] = s[i] + rand() % 8 + 1;
+		s[i] = f[i] - (rand() % 8 + 2);
+		if(s[i] < 0 ){
+			s[i] = 0;
+		}
 		v[i] = f[i] - s[i];
 	}
 	
@@ -99,9 +102,11 @@ double* calculateTimes(int n){
 	
 	tGen = (t2-t1);		
 	
+	//showArrays(s,f,v,p,n);
+	
 	gettimeofday(&tim,NULL);
 	t1 = 1.0e6 * tim.tv_sec + tim.tv_usec; 	
-	res = computeOpt(n-1,v,p);	
+	res = 0; //computeOpt(n-1,v,p);	
 	gettimeofday(&tim,NULL);
 	t2 = 1.0e6 * tim.tv_sec + tim.tv_usec;	
 	times[0] = (t2-t1) + tGen;	

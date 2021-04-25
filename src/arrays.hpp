@@ -39,7 +39,7 @@ int* createArray(int n){
 void randomizeArray(int* a,int n,double SEED){
 	srand(SEED);
 	for(int i = 1; i < n; i++){
-		a[i] = rand() % 19 + 1;
+		a[i] = rand() % 30 + 1;
 	}
 }
 
